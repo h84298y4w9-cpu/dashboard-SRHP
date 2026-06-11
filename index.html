@@ -2,34 +2,96 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Tableau de bord - Suivi opérationnel</title>
+  <title>Dashboard SRHP</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f3f5f8;
+      background: #f4f6f9;
       color: #1f2937;
     }
 
-    header {
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 270px;
       background: #0f172a;
       color: white;
-      padding: 20px 30px;
+      padding: 20px;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 26px;
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 22px;
     }
 
-    header p {
-      margin: 5px 0 0;
-      color: #cbd5e1;
+    .sidebar p {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 25px;
     }
 
-    .container {
-      padding: 25px;
+    .menu-title {
+      margin-top: 25px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .menu-btn {
+      display: block;
+      width: 100%;
+      padding: 11px 12px;
+      margin-bottom: 6px;
+      background: transparent;
+      color: #e2e8f0;
+      border: none;
+      text-align: left;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .menu-btn:hover, .menu-btn.active {
+      background: #1e293b;
+      color: white;
+    }
+
+    .main {
+      margin-left: 270px;
+      padding: 30px;
+      width: calc(100% - 270px);
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-top: -10px;
+      margin-bottom: 25px;
     }
 
     .kpi-grid {
@@ -41,9 +103,10 @@
 
     .card {
       background: white;
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      margin-bottom: 20px;
     }
 
     .kpi-title {
@@ -61,6 +124,35 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+    }
+
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .hub-card {
+      padding: 24px;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      transition: 0.2s;
+      border-left: 7px solid #0f172a;
+    }
+
+    .hub-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+    }
+
+    .hub-card h2 {
+      margin-top: 0;
+    }
+
+    .hub-card p {
+      color: #64748b;
     }
 
     table {
@@ -83,228 +175,571 @@
       background: #e2e8f0;
     }
 
+    input, select, textarea, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-family: Arial, sans-serif;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+    }
+
+    button.action {
+      background: #0f172a;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button.action:hover {
+      background: #1e293b;
+    }
+
     .badge {
       padding: 5px 10px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: bold;
+      display: inline-block;
     }
 
-    .done { background: #dcfce7; color: #166534; }
-    .progress { background: #fef9c3; color: #854d0e; }
-    .late { background: #fee2e2; color: #991b1b; }
+    .blue { background: #dbeafe; color: #1e40af; }
+    .green { background: #dcfce7; color: #166534; }
+    .orange { background: #ffedd5; color: #9a3412; }
+    .red { background: #fee2e2; color: #991b1b; }
+    .purple { background: #ede9fe; color: #5b21b6; }
 
-    .form-card {
-      margin-top: 25px;
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
     }
 
-    input, select, button {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-    }
-
-    button {
-      background: #0f172a;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1e293b;
+    .note {
+      background: #f8fafc;
+      border-left: 4px solid #0f172a;
+      padding: 12px;
+      border-radius: 10px;
+      color: #475569;
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>Tableau de bord opérationnel</h1>
-    <p>Suivi des tâches, échéances, données et indicateurs</p>
-  </header>
+<div class="app">
 
-  <div class="container">
+  <aside class="sidebar">
+    <h2>SRHP Dashboard</h2>
+    <p>Portail de pilotage — prototype</p>
 
-    <div class="kpi-grid">
+    <div class="menu-title">Accueil</div>
+    <button class="menu-btn active" onclick="showSection('home', this)">🏠 Vue générale</button>
+    <button class="menu-btn" onclick="showSection('tasks', this)">✅ Suivi des tâches</button>
+
+    <div class="menu-title">Pôles majeurs</div>
+    <button class="menu-btn" onclick="showSection('pspg', this)">🛡️ Pôle PSPG</button>
+    <button class="menu-btn" onclick="showSection('cat', this)">📁 Pôle CAT</button>
+    <button class="menu-btn" onclick="showSection('sandhurst', this)">🇬🇧 Pôle Sandhurst</button>
+
+    <div class="menu-title">Modules transverses</div>
+    <button class="menu-btn" onclick="showSection('budget', this)">💰 Budget</button>
+    <button class="menu-btn" onclick="showSection('conventions', this)">📄 Conventions</button>
+    <button class="menu-btn" onclick="showSection('effectifs', this)">👥 Effectifs</button>
+    <button class="menu-btn" onclick="showSection('data', this)">📊 Data & historiques</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- ACCUEIL -->
+    <section id="home" class="section active">
+      <h1>Vue générale</h1>
+      <p class="subtitle">Vitrine des 3 grands pôles : PSPG, CAT et Sandhurst.</p>
+
+      <div class="kpi-grid">
+        <div class="card">
+          <div class="kpi-title">Conventions suivies</div>
+          <div class="kpi-value">53</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Tâches ouvertes</div>
+          <div class="kpi-value" id="homeOpenTasks">0</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Budget suivi</div>
+          <div class="kpi-value">105 M€</div>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Effectifs suivis</div>
+          <div class="kpi-value">+7</div>
+        </div>
+      </div>
+
+      <div class="hub-grid">
+        <div class="hub-card" onclick="openFromCard('pspg')">
+          <h2>🛡️ Pôle PSPG</h2>
+          <p>Suivi des conventions EDF et CEA, équipements, effectifs, budget et échéances associées.</p>
+          <span class="badge blue">EDF / CEA</span>
+        </div>
+
+        <div class="hub-card" onclick="openFromCard('cat')">
+          <h2>📁 Pôle CAT</h2>
+          <p>Suivi des conventions d’affectation temporaire, portefeuille d’environ 50 conventions.</p>
+          <span class="badge purple">50 conventions</span>
+        </div>
+
+        <div class="hub-card" onclick="openFromCard('sandhurst')">
+          <h2>🇬🇧 Pôle Sandhurst</h2>
+          <p>Suivi dédié de la convention avec les Britanniques, échéances, documents et indicateurs.</p>
+          <span class="badge green">International</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Répartition des conventions</h2>
+          <canvas id="conventionChart"></canvas>
+        </div>
+        <div class="card">
+          <h2>Suivi global annuel</h2>
+          <canvas id="annualChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- TACHES -->
+    <section id="tasks" class="section">
+      <h1>Suivi des tâches</h1>
+      <p class="subtitle">Ajout, échéance, priorité, statut et rattachement à un pôle.</p>
+
       <div class="card">
-        <div class="kpi-title">Tâches totales</div>
-        <div class="kpi-value" id="totalTasks">0</div>
+        <h2>Ajouter une tâche</h2>
+        <input id="taskName" placeholder="Nom de la tâche">
+        <input id="taskDueDate" type="date">
+
+        <select id="taskPole">
+          <option>PSPG</option>
+          <option>CAT</option>
+          <option>Sandhurst</option>
+          <option>Transverse</option>
+        </select>
+
+        <select id="taskStatus">
+          <option>À faire</option>
+          <option>En cours</option>
+          <option>Terminée</option>
+          <option>En retard</option>
+        </select>
+
+        <select id="taskPriority">
+          <option>Faible</option>
+          <option>Moyenne</option>
+          <option>Haute</option>
+          <option>Critique</option>
+        </select>
+
+        <button class="action" onclick="addTask()">Ajouter</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Répartition par statut</h2>
+          <canvas id="taskStatusChart"></canvas>
+        </div>
+        <div class="card">
+          <h2>Répartition par pôle</h2>
+          <canvas id="taskPoleChart"></canvas>
+        </div>
       </div>
 
       <div class="card">
-        <div class="kpi-title">En cours</div>
-        <div class="kpi-value" id="inProgressTasks">0</div>
+        <h2>Liste des tâches</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Tâche</th>
+              <th>Pôle</th>
+              <th>Échéance</th>
+              <th>Statut</th>
+              <th>Priorité</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="taskTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PSPG -->
+    <section id="pspg" class="section">
+      <h1>Pôle PSPG</h1>
+      <p class="subtitle">Pilotage des conventions EDF et CEA.</p>
+
+      <div class="kpi-grid">
+        <div class="card"><div class="kpi-title">Conventions</div><div class="kpi-value">2</div></div>
+        <div class="card"><div class="kpi-title">Budget estimé</div><div class="kpi-value">104 M€</div></div>
+        <div class="card"><div class="kpi-title">Échéances</div><div class="kpi-value">8</div></div>
+        <div class="card"><div class="kpi-title">ETP suivis</div><div class="kpi-value">+7</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Convention EDF</h2>
+          <p class="note">Module destiné au suivi budgétaire, effectifs, équipements, échéances et décisions liées à EDF.</p>
+          <table>
+            <tr><th>Indicateur</th><th>Valeur fictive</th></tr>
+            <tr><td>Budget annuel</td><td>104 M€</td></tr>
+            <tr><td>TER cible</td><td>97 %</td></tr>
+            <tr><td>Échéance majeure</td><td>31/12/2027</td></tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Convention CEA</h2>
+          <p class="note">Module destiné au suivi des sites, effectifs, équipements et enveloppes spécifiques CEA.</p>
+          <table>
+            <tr><th>Indicateur</th><th>Valeur fictive</th></tr>
+            <tr><td>Budget équipement</td><td>800 k€</td></tr>
+            <tr><td>Sites suivis</td><td>2</td></tr>
+            <tr><td>Échéance majeure</td><td>À compléter</td></tr>
+          </table>
+        </div>
       </div>
 
       <div class="card">
-        <div class="kpi-title">Terminées</div>
-        <div class="kpi-value" id="doneTasks">0</div>
+        <h2>Graphique PSPG</h2>
+        <canvas id="pspgChart"></canvas>
+      </div>
+    </section>
+
+    <!-- CAT -->
+    <section id="cat" class="section">
+      <h1>Pôle CAT</h1>
+      <p class="subtitle">Conventions d’affectation temporaire — portefeuille d’environ 50 conventions.</p>
+
+      <div class="kpi-grid">
+        <div class="card"><div class="kpi-title">CAT totales</div><div class="kpi-value">50</div></div>
+        <div class="card"><div class="kpi-title">Actives</div><div class="kpi-value">42</div></div>
+        <div class="card"><div class="kpi-title">À renouveler</div><div class="kpi-value">6</div></div>
+        <div class="card"><div class="kpi-title">À risque</div><div class="kpi-value">2</div></div>
       </div>
 
       <div class="card">
-        <div class="kpi-title">En retard</div>
-        <div class="kpi-value" id="lateTasks">0</div>
+        <h2>Liste des conventions CAT</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Convention</th>
+              <th>Partenaire</th>
+              <th>Statut</th>
+              <th>Échéance</th>
+              <th>Observations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>CAT 001</td><td>Partenaire fictif</td><td><span class="badge green">Active</span></td><td>2026</td><td>RAS</td></tr>
+            <tr><td>CAT 002</td><td>Partenaire fictif</td><td><span class="badge orange">À renouveler</span></td><td>2026</td><td>Relance à prévoir</td></tr>
+            <tr><td>CAT 003</td><td>Partenaire fictif</td><td><span class="badge red">À risque</span></td><td>2026</td><td>Point juridique nécessaire</td></tr>
+          </tbody>
+        </table>
       </div>
-    </div>
 
-    <div class="grid-2">
       <div class="card">
-        <h2>Répartition des tâches</h2>
-        <canvas id="taskChart"></canvas>
+        <h2>Répartition CAT</h2>
+        <canvas id="catChart"></canvas>
+      </div>
+    </section>
+
+    <!-- SANDHURST -->
+    <section id="sandhurst" class="section">
+      <h1>Pôle Sandhurst</h1>
+      <p class="subtitle">Suivi spécifique de la convention avec les Britanniques.</p>
+
+      <div class="kpi-grid">
+        <div class="card"><div class="kpi-title">Convention</div><div class="kpi-value">1</div></div>
+        <div class="card"><div class="kpi-title">Statut</div><div class="kpi-value">Actif</div></div>
+        <div class="card"><div class="kpi-title">Échéances</div><div class="kpi-value">3</div></div>
+        <div class="card"><div class="kpi-title">Documents</div><div class="kpi-value">5</div></div>
       </div>
 
       <div class="card">
-        <h2>Évolution mensuelle</h2>
-        <canvas id="historyChart"></canvas>
+        <h2>Fiche convention Sandhurst</h2>
+        <table>
+          <tr><th>Élément</th><th>Information fictive</th></tr>
+          <tr><td>Partenaire</td><td>Britanniques / Sandhurst</td></tr>
+          <tr><td>Objet</td><td>Coopération / affectation / suivi administratif</td></tr>
+          <tr><td>Statut</td><td><span class="badge green">En cours</span></td></tr>
+          <tr><td>Prochaine action</td><td>Contrôle de l’échéancier</td></tr>
+        </table>
       </div>
-    </div>
+    </section>
 
-    <div class="card form-card">
-      <h2>Ajouter une tâche</h2>
+    <!-- BUDGET -->
+    <section id="budget" class="section">
+      <h1>Budget</h1>
+      <p class="subtitle">Suivi des crédits, consommation et prévisions.</p>
 
-      <input type="text" id="taskName" placeholder="Nom de la tâche">
-      <input type="date" id="taskDueDate">
+      <div class="kpi-grid">
+        <div class="card"><div class="kpi-title">Crédits ouverts</div><div class="kpi-value">105 M€</div></div>
+        <div class="card"><div class="kpi-title">Consommés</div><div class="kpi-value">82 M€</div></div>
+        <div class="card"><div class="kpi-title">Disponible</div><div class="kpi-value">23 M€</div></div>
+        <div class="card"><div class="kpi-title">Taux conso.</div><div class="kpi-value">78 %</div></div>
+      </div>
 
-      <select id="taskStatus">
-        <option value="En cours">En cours</option>
-        <option value="Terminée">Terminée</option>
-        <option value="En retard">En retard</option>
-      </select>
+      <div class="card">
+        <h2>Consommation budgétaire mensuelle</h2>
+        <canvas id="budgetChart"></canvas>
+      </div>
+    </section>
 
-      <select id="taskPriority">
-        <option value="Faible">Faible</option>
-        <option value="Moyenne">Moyenne</option>
-        <option value="Haute">Haute</option>
-      </select>
+    <!-- CONVENTIONS -->
+    <section id="conventions" class="section">
+      <h1>Conventions</h1>
+      <p class="subtitle">Vue consolidée des conventions PSPG, CAT et Sandhurst.</p>
 
-      <button onclick="addTask()">Ajouter</button>
-    </div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Pôle</th>
+              <th>Convention</th>
+              <th>Partenaire</th>
+              <th>Statut</th>
+              <th>Échéance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>PSPG</td><td>Convention EDF</td><td>EDF</td><td><span class="badge green">Active</span></td><td>2027</td></tr>
+            <tr><td>PSPG</td><td>Convention CEA</td><td>CEA</td><td><span class="badge green">Active</span></td><td>À compléter</td></tr>
+            <tr><td>CAT</td><td>CAT 001 à 050</td><td>Multiples</td><td><span class="badge orange">À suivre</span></td><td>Variable</td></tr>
+            <tr><td>Sandhurst</td><td>Convention Sandhurst</td><td>Britanniques</td><td><span class="badge green">Active</span></td><td>À compléter</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-    <div class="card form-card">
-      <h2>Liste des tâches</h2>
+    <!-- EFFECTIFS -->
+    <section id="effectifs" class="section">
+      <h1>Effectifs</h1>
+      <p class="subtitle">Suivi des ETP et évolutions par pôle.</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Tâche</th>
-            <th>Échéance</th>
-            <th>Statut</th>
-            <th>Priorité</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="taskTable"></tbody>
-      </table>
-    </div>
+      <div class="card">
+        <h2>Évolution des effectifs</h2>
+        <canvas id="effectifsChart"></canvas>
+      </div>
+    </section>
 
-  </div>
+    <!-- DATA -->
+    <section id="data" class="section">
+      <h1>Data & historiques</h1>
+      <p class="subtitle">Zone destinée aux historiques, tendances, séries longues et indicateurs consolidés.</p>
 
-  <script>
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [
-      { name: "Suivi convention EDF", dueDate: "2026-06-30", status: "En cours", priority: "Haute" },
-      { name: "Analyse devis équipement", dueDate: "2026-06-20", status: "Terminée", priority: "Moyenne" },
-      { name: "Préparation réunion budgétaire", dueDate: "2026-06-10", status: "En retard", priority: "Haute" }
-    ];
+      <div class="card">
+        <h2>Historique global</h2>
+        <canvas id="dataChart"></canvas>
+      </div>
+    </section>
 
-    let taskChart;
-    let historyChart;
+  </main>
+</div>
 
-    function saveTasks() {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
+<script>
+  let tasks = JSON.parse(localStorage.getItem("srhpTasks")) || [
+    { name: "Préparer point EDF", dueDate: "2026-06-30", pole: "PSPG", status: "En cours", priority: "Haute" },
+    { name: "Mettre à jour liste CAT", dueDate: "2026-07-05", pole: "CAT", status: "À faire", priority: "Moyenne" },
+    { name: "Contrôler échéance Sandhurst", dueDate: "2026-06-20", pole: "Sandhurst", status: "En retard", priority: "Haute" }
+  ];
 
-    function addTask() {
-      const name = document.getElementById("taskName").value;
-      const dueDate = document.getElementById("taskDueDate").value;
-      const status = document.getElementById("taskStatus").value;
-      const priority = document.getElementById("taskPriority").value;
+  let charts = {};
 
-      if (!name || !dueDate) {
-        alert("Merci de remplir le nom et la date d'échéance.");
-        return;
+  function showSection(id, btn) {
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+
+    setTimeout(renderCharts, 100);
+  }
+
+  function openFromCard(id) {
+    const btns = document.querySelectorAll(".menu-btn");
+    let targetBtn = null;
+    btns.forEach(btn => {
+      if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes("'" + id + "'")) {
+        targetBtn = btn;
       }
+    });
+    showSection(id, targetBtn);
+  }
 
-      tasks.push({ name, dueDate, status, priority });
-      saveTasks();
-      renderDashboard();
+  function saveTasks() {
+    localStorage.setItem("srhpTasks", JSON.stringify(tasks));
+  }
 
-      document.getElementById("taskName").value = "";
-      document.getElementById("taskDueDate").value = "";
+  function addTask() {
+    const name = document.getElementById("taskName").value;
+    const dueDate = document.getElementById("taskDueDate").value;
+    const pole = document.getElementById("taskPole").value;
+    const status = document.getElementById("taskStatus").value;
+    const priority = document.getElementById("taskPriority").value;
+
+    if (!name || !dueDate) {
+      alert("Merci de remplir le nom et l’échéance.");
+      return;
     }
 
-    function deleteTask(index) {
-      tasks.splice(index, 1);
-      saveTasks();
-      renderDashboard();
-    }
+    tasks.push({ name, dueDate, pole, status, priority });
+    saveTasks();
+    renderTasks();
 
-    function getBadgeClass(status) {
-      if (status === "Terminée") return "done";
-      if (status === "En retard") return "late";
-      return "progress";
-    }
+    document.getElementById("taskName").value = "";
+    document.getElementById("taskDueDate").value = "";
+  }
 
-    function renderDashboard() {
-      const total = tasks.length;
-      const inProgress = tasks.filter(t => t.status === "En cours").length;
-      const done = tasks.filter(t => t.status === "Terminée").length;
-      const late = tasks.filter(t => t.status === "En retard").length;
+  function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+  }
 
-      document.getElementById("totalTasks").textContent = total;
-      document.getElementById("inProgressTasks").textContent = inProgress;
-      document.getElementById("doneTasks").textContent = done;
-      document.getElementById("lateTasks").textContent = late;
+  function badgeClass(value) {
+    if (value === "Terminée" || value === "Active" || value === "En cours") return "green";
+    if (value === "En retard" || value === "À risque" || value === "Critique") return "red";
+    if (value === "À faire" || value === "À renouveler") return "orange";
+    return "blue";
+  }
 
-      const table = document.getElementById("taskTable");
-      table.innerHTML = "";
+  function renderTasks() {
+    const table = document.getElementById("taskTable");
+    table.innerHTML = "";
 
-      tasks.forEach((task, index) => {
-        table.innerHTML += `
-          <tr>
-            <td>${task.name}</td>
-            <td>${task.dueDate}</td>
-            <td><span class="badge ${getBadgeClass(task.status)}">${task.status}</span></td>
-            <td>${task.priority}</td>
-            <td><button onclick="deleteTask(${index})">Supprimer</button></td>
-          </tr>
-        `;
-      });
+    tasks.forEach((task, index) => {
+      table.innerHTML += `
+        <tr>
+          <td>${task.name}</td>
+          <td>${task.pole}</td>
+          <td>${task.dueDate}</td>
+          <td><span class="badge ${badgeClass(task.status)}">${task.status}</span></td>
+          <td>${task.priority}</td>
+          <td><button class="action" onclick="deleteTask(${index})">Supprimer</button></td>
+        </tr>
+      `;
+    });
 
-      renderCharts(inProgress, done, late);
-    }
+    document.getElementById("homeOpenTasks").textContent =
+      tasks.filter(t => t.status !== "Terminée").length;
 
-    function renderCharts(inProgress, done, late) {
-      const ctx1 = document.getElementById("taskChart");
+    renderCharts();
+  }
 
-      if (taskChart) taskChart.destroy();
+  function countBy(field, value) {
+    return tasks.filter(t => t[field] === value).length;
+  }
 
-      taskChart = new Chart(ctx1, {
-        type: "doughnut",
-        data: {
-          labels: ["En cours", "Terminées", "En retard"],
-          datasets: [{
-            data: [inProgress, done, late]
-          }]
-        }
-      });
+  function makeChart(id, config) {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
 
-      const ctx2 = document.getElementById("historyChart");
+    if (charts[id]) charts[id].destroy();
 
-      if (historyChart) historyChart.destroy();
+    charts[id] = new Chart(canvas, config);
+  }
 
-      historyChart = new Chart(ctx2, {
-        type: "line",
-        data: {
-          labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
-          datasets: [{
-            label: "Dossiers suivis",
-            data: [8, 12, 15, 11, 18, tasks.length]
-          }]
-        }
-      });
-    }
+  function renderCharts() {
+    makeChart("conventionChart", {
+      type: "doughnut",
+      data: {
+        labels: ["PSPG", "CAT", "Sandhurst"],
+        datasets: [{ data: [2, 50, 1] }]
+      }
+    });
 
-    renderDashboard();
-  </script>
+    makeChart("annualChart", {
+      type: "line",
+      data: {
+        labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
+        datasets: [{ label: "Actions suivies", data: [8, 12, 18, 22, 26, 34] }]
+      }
+    });
+
+    makeChart("taskStatusChart", {
+      type: "bar",
+      data: {
+        labels: ["À faire", "En cours", "Terminée", "En retard"],
+        datasets: [{
+          label: "Nombre de tâches",
+          data: [
+            countBy("status", "À faire"),
+            countBy("status", "En cours"),
+            countBy("status", "Terminée"),
+            countBy("status", "En retard")
+          ]
+        }]
+      }
+    });
+
+    makeChart("taskPoleChart", {
+      type: "doughnut",
+      data: {
+        labels: ["PSPG", "CAT", "Sandhurst", "Transverse"],
+        datasets: [{
+          data: [
+            countBy("pole", "PSPG"),
+            countBy("pole", "CAT"),
+            countBy("pole", "Sandhurst"),
+            countBy("pole", "Transverse")
+          ]
+        }]
+      }
+    });
+
+    makeChart("pspgChart", {
+      type: "bar",
+      data: {
+        labels: ["EDF", "CEA"],
+        datasets: [{ label: "Volume budgétaire fictif", data: [104, 1.3] }]
+      }
+    });
+
+    makeChart("catChart", {
+      type: "pie",
+      data: {
+        labels: ["Actives", "À renouveler", "À risque"],
+        datasets: [{ data: [42, 6, 2] }]
+      }
+    });
+
+    makeChart("budgetChart", {
+      type: "line",
+      data: {
+        labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
+        datasets: [{ label: "Consommation M€", data: [10, 22, 35, 51, 67, 82] }]
+      }
+    });
+
+    makeChart("effectifsChart", {
+      type: "bar",
+      data: {
+        labels: ["PSPG", "CAT", "Sandhurst"],
+        datasets: [{ label: "ETP suivis fictifs", data: [7, 50, 1] }]
+      }
+    });
+
+    makeChart("dataChart", {
+      type: "line",
+      data: {
+        labels: ["2023", "2024", "2025", "2026"],
+        datasets: [{ label: "Données suivies", data: [15, 28, 41, 53] }]
+      }
+    });
+  }
+
+  renderTasks();
+</script>
 </body>
 </html>
