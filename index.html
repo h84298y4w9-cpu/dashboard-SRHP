@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tableau de bord - Suivi opérationnel</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f5f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #0f172a;
+      color: white;
+      padding: 20px 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      color: #cbd5e1;
+    }
+
+    .container {
+      padding: 25px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .kpi-title {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .kpi-value {
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #e2e8f0;
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .done { background: #dcfce7; color: #166534; }
+    .progress { background: #fef9c3; color: #854d0e; }
+    .late { background: #fee2e2; color: #991b1b; }
+
+    .form-card {
+      margin-top: 25px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+    }
+
+    button {
+      background: #0f172a;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1e293b;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Tableau de bord opérationnel</h1>
+    <p>Suivi des tâches, échéances, données et indicateurs</p>
+  </header>
+
+  <div class="container">
+
+    <div class="kpi-grid">
+      <div class="card">
+        <div class="kpi-title">Tâches totales</div>
+        <div class="kpi-value" id="totalTasks">0</div>
+      </div>
+
+      <div class="card">
+        <div class="kpi-title">En cours</div>
+        <div class="kpi-value" id="inProgressTasks">0</div>
+      </div>
+
+      <div class="card">
+        <div class="kpi-title">Terminées</div>
+        <div class="kpi-value" id="doneTasks">0</div>
+      </div>
+
+      <div class="card">
+        <div class="kpi-title">En retard</div>
+        <div class="kpi-value" id="lateTasks">0</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>Répartition des tâches</h2>
+        <canvas id="taskChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2>Évolution mensuelle</h2>
+        <canvas id="historyChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card form-card">
+      <h2>Ajouter une tâche</h2>
+
+      <input type="text" id="taskName" placeholder="Nom de la tâche">
+      <input type="date" id="taskDueDate">
+
+      <select id="taskStatus">
+        <option value="En cours">En cours</option>
+        <option value="Terminée">Terminée</option>
+        <option value="En retard">En retard</option>
+      </select>
+
+      <select id="taskPriority">
+        <option value="Faible">Faible</option>
+        <option value="Moyenne">Moyenne</option>
+        <option value="Haute">Haute</option>
+      </select>
+
+      <button onclick="addTask()">Ajouter</button>
+    </div>
+
+    <div class="card form-card">
+      <h2>Liste des tâches</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tâche</th>
+            <th>Échéance</th>
+            <th>Statut</th>
+            <th>Priorité</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="taskTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [
+      { name: "Suivi convention EDF", dueDate: "2026-06-30", status: "En cours", priority: "Haute" },
+      { name: "Analyse devis équipement", dueDate: "2026-06-20", status: "Terminée", priority: "Moyenne" },
+      { name: "Préparation réunion budgétaire", dueDate: "2026-06-10", status: "En retard", priority: "Haute" }
+    ];
+
+    let taskChart;
+    let historyChart;
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const name = document.getElementById("taskName").value;
+      const dueDate = document.getElementById("taskDueDate").value;
+      const status = document.getElementById("taskStatus").value;
+      const priority = document.getElementById("taskPriority").value;
+
+      if (!name || !dueDate) {
+        alert("Merci de remplir le nom et la date d'échéance.");
+        return;
+      }
+
+      tasks.push({ name, dueDate, status, priority });
+      saveTasks();
+      renderDashboard();
+
+      document.getElementById("taskName").value = "";
+      document.getElementById("taskDueDate").value = "";
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderDashboard();
+    }
+
+    function getBadgeClass(status) {
+      if (status === "Terminée") return "done";
+      if (status === "En retard") return "late";
+      return "progress";
+    }
+
+    function renderDashboard() {
+      const total = tasks.length;
+      const inProgress = tasks.filter(t => t.status === "En cours").length;
+      const done = tasks.filter(t => t.status === "Terminée").length;
+      const late = tasks.filter(t => t.status === "En retard").length;
+
+      document.getElementById("totalTasks").textContent = total;
+      document.getElementById("inProgressTasks").textContent = inProgress;
+      document.getElementById("doneTasks").textContent = done;
+      document.getElementById("lateTasks").textContent = late;
+
+      const table = document.getElementById("taskTable");
+      table.innerHTML = "";
+
+      tasks.forEach((task, index) => {
+        table.innerHTML += `
+          <tr>
+            <td>${task.name}</td>
+            <td>${task.dueDate}</td>
+            <td><span class="badge ${getBadgeClass(task.status)}">${task.status}</span></td>
+            <td>${task.priority}</td>
+            <td><button onclick="deleteTask(${index})">Supprimer</button></td>
+          </tr>
+        `;
+      });
+
+      renderCharts(inProgress, done, late);
+    }
+
+    function renderCharts(inProgress, done, late) {
+      const ctx1 = document.getElementById("taskChart");
+
+      if (taskChart) taskChart.destroy();
+
+      taskChart = new Chart(ctx1, {
+        type: "doughnut",
+        data: {
+          labels: ["En cours", "Terminées", "En retard"],
+          datasets: [{
+            data: [inProgress, done, late]
+          }]
+        }
+      });
+
+      const ctx2 = document.getElementById("historyChart");
+
+      if (historyChart) historyChart.destroy();
+
+      historyChart = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
+          datasets: [{
+            label: "Dossiers suivis",
+            data: [8, 12, 15, 11, 18, tasks.length]
+          }]
+        }
+      });
+    }
+
+    renderDashboard();
+  </script>
+</body>
+</html>
