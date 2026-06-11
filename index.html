@@ -15,10 +15,7 @@
       color: #1f2937;
     }
 
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
+    .app { display: flex; min-height: 100vh; }
 
     .sidebar {
       width: 270px;
@@ -30,16 +27,8 @@
       overflow-y: auto;
     }
 
-    .sidebar h2 {
-      margin-top: 0;
-      font-size: 22px;
-    }
-
-    .sidebar p {
-      color: #94a3b8;
-      font-size: 13px;
-      margin-bottom: 25px;
-    }
+    .sidebar h2 { margin-top: 0; font-size: 22px; }
+    .sidebar p { color: #94a3b8; font-size: 13px; margin-bottom: 25px; }
 
     .menu-title {
       margin-top: 25px;
@@ -75,24 +64,11 @@
       width: calc(100% - 270px);
     }
 
-    .section {
-      display: none;
-    }
+    .section { display: none; }
+    .section.active { display: block; }
 
-    .section.active {
-      display: block;
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 30px;
-    }
-
-    .subtitle {
-      color: #64748b;
-      margin-top: -10px;
-      margin-bottom: 25px;
-    }
+    h1 { margin-top: 0; font-size: 30px; }
+    .subtitle { color: #64748b; margin-top: -10px; margin-bottom: 25px; }
 
     .kpi-grid {
       display: grid;
@@ -109,16 +85,8 @@
       margin-bottom: 20px;
     }
 
-    .kpi-title {
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    .kpi-value {
-      font-size: 32px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
+    .kpi-title { color: #64748b; font-size: 14px; }
+    .kpi-value { font-size: 30px; font-weight: bold; margin-top: 10px; }
 
     .grid-2 {
       display: grid;
@@ -147,13 +115,8 @@
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
     }
 
-    .hub-card h2 {
-      margin-top: 0;
-    }
-
-    .hub-card p {
-      color: #64748b;
-    }
+    .hub-card h2 { margin-top: 0; }
+    .hub-card p { color: #64748b; }
 
     table {
       width: 100%;
@@ -171,9 +134,7 @@
       font-size: 14px;
     }
 
-    th {
-      background: #e2e8f0;
-    }
+    th { background: #e2e8f0; }
 
     input, select, textarea, button {
       padding: 10px;
@@ -183,10 +144,7 @@
       font-family: Arial, sans-serif;
     }
 
-    textarea {
-      width: 100%;
-      min-height: 80px;
-    }
+    textarea { width: 100%; min-height: 80px; }
 
     button.action {
       background: #0f172a;
@@ -195,9 +153,7 @@
       border: none;
     }
 
-    button.action:hover {
-      background: #1e293b;
-    }
+    button.action:hover { background: #1e293b; }
 
     .badge {
       padding: 5px 10px;
@@ -213,19 +169,27 @@
     .red { background: #fee2e2; color: #991b1b; }
     .purple { background: #ede9fe; color: #5b21b6; }
 
-    .module-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
     .note {
       background: #f8fafc;
       border-left: 4px solid #0f172a;
       padding: 12px;
       border-radius: 10px;
       color: #475569;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+
+      .app { display: block; }
+      .main { margin-left: 0; width: 100%; }
+
+      .kpi-grid, .grid-2, .hub-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -255,46 +219,33 @@
 
   <main class="main">
 
-    <!-- ACCUEIL -->
     <section id="home" class="section active">
       <h1>Vue générale</h1>
       <p class="subtitle">Vitrine des 3 grands pôles : PSPG, CAT et Sandhurst.</p>
 
       <div class="kpi-grid">
-        <div class="card">
-          <div class="kpi-title">Conventions suivies</div>
-          <div class="kpi-value">53</div>
-        </div>
-        <div class="card">
-          <div class="kpi-title">Tâches ouvertes</div>
-          <div class="kpi-value" id="homeOpenTasks">0</div>
-        </div>
-        <div class="card">
-          <div class="kpi-title">Budget suivi</div>
-          <div class="kpi-value">105 M€</div>
-        </div>
-        <div class="card">
-          <div class="kpi-title">Effectifs suivis</div>
-          <div class="kpi-value">+7</div>
-        </div>
+        <div class="card"><div class="kpi-title">Conventions suivies</div><div class="kpi-value">53</div></div>
+        <div class="card"><div class="kpi-title">Tâches ouvertes</div><div class="kpi-value" id="homeOpenTasks">0</div></div>
+        <div class="card"><div class="kpi-title">Total PSPG facturé</div><div class="kpi-value" id="homePspgTotal">0 M€</div></div>
+        <div class="card"><div class="kpi-title">CAT suivies</div><div class="kpi-value" id="homeCatTotal">0</div></div>
       </div>
 
       <div class="hub-grid">
         <div class="hub-card" onclick="openFromCard('pspg')">
           <h2>🛡️ Pôle PSPG</h2>
-          <p>Suivi des conventions EDF et CEA, équipements, effectifs, budget et échéances associées.</p>
+          <p>Conventions EDF / CEA, facturation, équipement, tâches, échéances et documentation.</p>
           <span class="badge blue">EDF / CEA</span>
         </div>
 
         <div class="hub-card" onclick="openFromCard('cat')">
           <h2>📁 Pôle CAT</h2>
-          <p>Suivi des conventions d’affectation temporaire, portefeuille d’environ 50 conventions.</p>
-          <span class="badge purple">50 conventions</span>
+          <p>Début, échéance, statut, effectifs affectés, grades et tâches à réaliser.</p>
+          <span class="badge purple">Conventions temporaires</span>
         </div>
 
         <div class="hub-card" onclick="openFromCard('sandhurst')">
           <h2>🇬🇧 Pôle Sandhurst</h2>
-          <p>Suivi dédié de la convention avec les Britanniques, échéances, documents et indicateurs.</p>
+          <p>Suivi dédié de la convention avec les Britanniques.</p>
           <span class="badge green">International</span>
         </div>
       </div>
@@ -311,7 +262,6 @@
       </div>
     </section>
 
-    <!-- TACHES -->
     <section id="tasks" class="section">
       <h1>Suivi des tâches</h1>
       <p class="subtitle">Ajout, échéance, priorité, statut et rattachement à un pôle.</p>
@@ -374,58 +324,169 @@
       </div>
     </section>
 
-    <!-- PSPG -->
     <section id="pspg" class="section">
       <h1>Pôle PSPG</h1>
-      <p class="subtitle">Pilotage des conventions EDF et CEA.</p>
+      <p class="subtitle">Pilotage EDF / CEA : facturation, équipement, échéances, documentation et effectifs.</p>
 
       <div class="kpi-grid">
-        <div class="card"><div class="kpi-title">Conventions</div><div class="kpi-value">2</div></div>
-        <div class="card"><div class="kpi-title">Budget estimé</div><div class="kpi-value">104 M€</div></div>
-        <div class="card"><div class="kpi-title">Échéances</div><div class="kpi-value">8</div></div>
-        <div class="card"><div class="kpi-title">ETP suivis</div><div class="kpi-value">+7</div></div>
+        <div class="card"><div class="kpi-title">Total facturé</div><div class="kpi-value" id="pspgTotalFacture">0 M€</div></div>
+        <div class="card"><div class="kpi-title">Masse salariale</div><div class="kpi-value" id="pspgMasseSalariale">0 M€</div></div>
+        <div class="card"><div class="kpi-title">Fonctionnement</div><div class="kpi-value" id="pspgFonctionnement">0 M€</div></div>
+        <div class="card"><div class="kpi-title">Équipement</div><div class="kpi-value" id="pspgEquipement">0 M€</div></div>
       </div>
 
       <div class="grid-2">
         <div class="card">
-          <h2>Convention EDF</h2>
-          <p class="note">Module destiné au suivi budgétaire, effectifs, équipements, échéances et décisions liées à EDF.</p>
-          <table>
-            <tr><th>Indicateur</th><th>Valeur fictive</th></tr>
-            <tr><td>Budget annuel</td><td>104 M€</td></tr>
-            <tr><td>TER cible</td><td>97 %</td></tr>
-            <tr><td>Échéance majeure</td><td>31/12/2027</td></tr>
-          </table>
+          <h2>Ajouter une facturation</h2>
+
+          <select id="pspgConvention">
+            <option value="EDF">EDF</option>
+            <option value="CEA">CEA</option>
+          </select>
+
+          <input id="pspgYear" type="number" placeholder="Année ex : 2026">
+
+          <select id="pspgQuarter">
+            <option value="T1">T1</option>
+            <option value="T2">T2</option>
+            <option value="T3">T3</option>
+            <option value="T4">T4</option>
+          </select>
+
+          <input id="pspgPayroll" type="number" placeholder="Masse salariale (€)">
+          <input id="pspgOperating" type="number" placeholder="Fonctionnement (€)">
+          <input id="pspgEquipment" type="number" placeholder="Équipement (€)">
+
+          <button class="action" onclick="addPspgBilling()">Ajouter</button>
         </div>
 
         <div class="card">
-          <h2>Convention CEA</h2>
-          <p class="note">Module destiné au suivi des sites, effectifs, équipements et enveloppes spécifiques CEA.</p>
-          <table>
-            <tr><th>Indicateur</th><th>Valeur fictive</th></tr>
-            <tr><td>Budget équipement</td><td>800 k€</td></tr>
-            <tr><td>Sites suivis</td><td>2</td></tr>
-            <tr><td>Échéance majeure</td><td>À compléter</td></tr>
-          </table>
+          <h2>Répartition des dépenses</h2>
+          <canvas id="pspgBillingPieChart"></canvas>
         </div>
       </div>
 
       <div class="card">
-        <h2>Graphique PSPG</h2>
-        <canvas id="pspgChart"></canvas>
+        <h2>Historique de la facturation</h2>
+        <canvas id="pspgBillingLineChart"></canvas>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Convention</th>
+              <th>Année</th>
+              <th>Trimestre</th>
+              <th>Masse salariale</th>
+              <th>Fonctionnement</th>
+              <th>Équipement</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="pspgBillingTable"></tbody>
+        </table>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Échéances PSPG</h2>
+
+          <input id="pspgDeadlineTitle" placeholder="Action ou échéance">
+          <input id="pspgDeadlineOwner" placeholder="Responsable">
+          <input id="pspgDeadlineDate" type="date">
+
+          <select id="pspgDeadlineStatus">
+            <option>À faire</option>
+            <option>En cours</option>
+            <option>Terminée</option>
+            <option>En retard</option>
+          </select>
+
+          <button class="action" onclick="addPspgDeadline()">Ajouter</button>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Responsable</th>
+                <th>Date limite</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="pspgDeadlineTable"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Documentation PSPG</h2>
+
+          <input id="pspgDocTitle" placeholder="Nom du document">
+          <select id="pspgDocType">
+            <option>Convention</option>
+            <option>Avenant</option>
+            <option>Note</option>
+            <option>Courrier</option>
+            <option>Autre</option>
+          </select>
+          <input id="pspgDocRef" placeholder="Référence / emplacement / lien interne">
+
+          <button class="action" onclick="addPspgDoc()">Ajouter</button>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>Type</th>
+                <th>Référence</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="pspgDocTable"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <!-- CAT -->
     <section id="cat" class="section">
       <h1>Pôle CAT</h1>
-      <p class="subtitle">Conventions d’affectation temporaire — portefeuille d’environ 50 conventions.</p>
+      <p class="subtitle">Conventions d’affectation temporaire : début, échéance, effectifs, grades et tâches.</p>
 
       <div class="kpi-grid">
-        <div class="card"><div class="kpi-title">CAT totales</div><div class="kpi-value">50</div></div>
-        <div class="card"><div class="kpi-title">Actives</div><div class="kpi-value">42</div></div>
-        <div class="card"><div class="kpi-title">À renouveler</div><div class="kpi-value">6</div></div>
-        <div class="card"><div class="kpi-title">À risque</div><div class="kpi-value">2</div></div>
+        <div class="card"><div class="kpi-title">CAT totales</div><div class="kpi-value" id="catTotal">0</div></div>
+        <div class="card"><div class="kpi-title">Actives</div><div class="kpi-value" id="catActive">0</div></div>
+        <div class="card"><div class="kpi-title">À renouveler</div><div class="kpi-value" id="catRenew">0</div></div>
+        <div class="card"><div class="kpi-title">Personnels affectés</div><div class="kpi-value" id="catPersonnel">0</div></div>
+      </div>
+
+      <div class="card">
+        <h2>Ajouter une convention CAT</h2>
+        <input id="catName" placeholder="Nom de la CAT">
+        <input id="catPartner" placeholder="Partenaire">
+        <input id="catStart" type="date">
+        <input id="catEnd" type="date">
+        <input id="catSog" type="number" placeholder="Nombre SOG">
+        <input id="catOg" type="number" placeholder="Nombre OG">
+
+        <select id="catStatus">
+          <option>Active</option>
+          <option>À renouveler</option>
+          <option>À risque</option>
+          <option>Terminée</option>
+        </select>
+
+        <button class="action" onclick="addCat()">Ajouter</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h2>Répartition des statuts CAT</h2>
+          <canvas id="catStatusChart"></canvas>
+        </div>
+        <div class="card">
+          <h2>Répartition des grades</h2>
+          <canvas id="catGradeChart"></canvas>
+        </div>
       </div>
 
       <div class="card">
@@ -435,26 +496,19 @@
             <tr>
               <th>Convention</th>
               <th>Partenaire</th>
-              <th>Statut</th>
+              <th>Début</th>
               <th>Échéance</th>
-              <th>Observations</th>
+              <th>SOG</th>
+              <th>OG</th>
+              <th>Statut</th>
+              <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td>CAT 001</td><td>Partenaire fictif</td><td><span class="badge green">Active</span></td><td>2026</td><td>RAS</td></tr>
-            <tr><td>CAT 002</td><td>Partenaire fictif</td><td><span class="badge orange">À renouveler</span></td><td>2026</td><td>Relance à prévoir</td></tr>
-            <tr><td>CAT 003</td><td>Partenaire fictif</td><td><span class="badge red">À risque</span></td><td>2026</td><td>Point juridique nécessaire</td></tr>
-          </tbody>
+          <tbody id="catTable"></tbody>
         </table>
-      </div>
-
-      <div class="card">
-        <h2>Répartition CAT</h2>
-        <canvas id="catChart"></canvas>
       </div>
     </section>
 
-    <!-- SANDHURST -->
     <section id="sandhurst" class="section">
       <h1>Pôle Sandhurst</h1>
       <p class="subtitle">Suivi spécifique de la convention avec les Britanniques.</p>
@@ -478,17 +532,9 @@
       </div>
     </section>
 
-    <!-- BUDGET -->
     <section id="budget" class="section">
       <h1>Budget</h1>
-      <p class="subtitle">Suivi des crédits, consommation et prévisions.</p>
-
-      <div class="kpi-grid">
-        <div class="card"><div class="kpi-title">Crédits ouverts</div><div class="kpi-value">105 M€</div></div>
-        <div class="card"><div class="kpi-title">Consommés</div><div class="kpi-value">82 M€</div></div>
-        <div class="card"><div class="kpi-title">Disponible</div><div class="kpi-value">23 M€</div></div>
-        <div class="card"><div class="kpi-title">Taux conso.</div><div class="kpi-value">78 %</div></div>
-      </div>
+      <p class="subtitle">Suivi consolidé des crédits, consommation et prévisions.</p>
 
       <div class="card">
         <h2>Consommation budgétaire mensuelle</h2>
@@ -496,10 +542,9 @@
       </div>
     </section>
 
-    <!-- CONVENTIONS -->
     <section id="conventions" class="section">
       <h1>Conventions</h1>
-      <p class="subtitle">Vue consolidée des conventions PSPG, CAT et Sandhurst.</p>
+      <p class="subtitle">Vue consolidée PSPG, CAT et Sandhurst.</p>
 
       <div class="card">
         <table>
@@ -512,31 +557,24 @@
               <th>Échéance</th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td>PSPG</td><td>Convention EDF</td><td>EDF</td><td><span class="badge green">Active</span></td><td>2027</td></tr>
-            <tr><td>PSPG</td><td>Convention CEA</td><td>CEA</td><td><span class="badge green">Active</span></td><td>À compléter</td></tr>
-            <tr><td>CAT</td><td>CAT 001 à 050</td><td>Multiples</td><td><span class="badge orange">À suivre</span></td><td>Variable</td></tr>
-            <tr><td>Sandhurst</td><td>Convention Sandhurst</td><td>Britanniques</td><td><span class="badge green">Active</span></td><td>À compléter</td></tr>
-          </tbody>
+          <tbody id="conventionsTable"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- EFFECTIFS -->
     <section id="effectifs" class="section">
       <h1>Effectifs</h1>
-      <p class="subtitle">Suivi des ETP et évolutions par pôle.</p>
+      <p class="subtitle">Suivi des effectifs et répartition des grades.</p>
 
       <div class="card">
-        <h2>Évolution des effectifs</h2>
+        <h2>Répartition des effectifs</h2>
         <canvas id="effectifsChart"></canvas>
       </div>
     </section>
 
-    <!-- DATA -->
     <section id="data" class="section">
       <h1>Data & historiques</h1>
-      <p class="subtitle">Zone destinée aux historiques, tendances, séries longues et indicateurs consolidés.</p>
+      <p class="subtitle">Historique global et tendances.</p>
 
       <div class="card">
         <h2>Historique global</h2>
@@ -548,13 +586,38 @@
 </div>
 
 <script>
+  let charts = {};
+
   let tasks = JSON.parse(localStorage.getItem("srhpTasks")) || [
     { name: "Préparer point EDF", dueDate: "2026-06-30", pole: "PSPG", status: "En cours", priority: "Haute" },
     { name: "Mettre à jour liste CAT", dueDate: "2026-07-05", pole: "CAT", status: "À faire", priority: "Moyenne" },
     { name: "Contrôler échéance Sandhurst", dueDate: "2026-06-20", pole: "Sandhurst", status: "En retard", priority: "Haute" }
   ];
 
-  let charts = {};
+  let pspgBilling = JSON.parse(localStorage.getItem("pspgBilling")) || [
+    { convention: "EDF", year: 2023, quarter: "T1", payroll: 12000000, operating: 800000, equipment: 1050000 },
+    { convention: "EDF", year: 2023, quarter: "T2", payroll: 12500000, operating: 900000, equipment: 1050000 },
+    { convention: "EDF", year: 2023, quarter: "T3", payroll: 13000000, operating: 950000, equipment: 1050000 },
+    { convention: "EDF", year: 2023, quarter: "T4", payroll: 13500000, operating: 1000000, equipment: 1050000 },
+    { convention: "CEA", year: 2023, quarter: "T1", payroll: 900000, operating: 100000, equipment: 200000 }
+  ];
+
+  let pspgDeadlines = JSON.parse(localStorage.getItem("pspgDeadlines")) || [
+    { title: "Préparer point de facturation EDF", owner: "SRHP", date: "2026-06-30", status: "En cours" },
+    { title: "Classer avenant CEA", owner: "SRHP", date: "2026-07-15", status: "À faire" }
+  ];
+
+  let pspgDocs = JSON.parse(localStorage.getItem("pspgDocs")) || [
+    { title: "Convention EDF", type: "Convention", ref: "Emplacement interne à compléter" },
+    { title: "Avenant n°2 EDF", type: "Avenant", ref: "Emplacement interne à compléter" },
+    { title: "Convention CEA", type: "Convention", ref: "Emplacement interne à compléter" }
+  ];
+
+  let cats = JSON.parse(localStorage.getItem("cats")) || [
+    { name: "CAT 001", partner: "Partenaire fictif", start: "2025-01-01", end: "2026-12-31", sog: 8, og: 1, status: "Active" },
+    { name: "CAT 002", partner: "Partenaire fictif", start: "2024-06-01", end: "2026-06-30", sog: 5, og: 0, status: "À renouveler" },
+    { name: "CAT 003", partner: "Partenaire fictif", start: "2023-09-01", end: "2026-09-01", sog: 3, og: 1, status: "À risque" }
+  ];
 
   function showSection(id, btn) {
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
@@ -563,22 +626,56 @@
     document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("active"));
     if (btn) btn.classList.add("active");
 
-    setTimeout(renderCharts, 100);
+    setTimeout(renderAll, 100);
   }
 
   function openFromCard(id) {
     const btns = document.querySelectorAll(".menu-btn");
     let targetBtn = null;
+
     btns.forEach(btn => {
       if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes("'" + id + "'")) {
         targetBtn = btn;
       }
     });
+
     showSection(id, targetBtn);
   }
 
-  function saveTasks() {
+  function saveAll() {
     localStorage.setItem("srhpTasks", JSON.stringify(tasks));
+    localStorage.setItem("pspgBilling", JSON.stringify(pspgBilling));
+    localStorage.setItem("pspgDeadlines", JSON.stringify(pspgDeadlines));
+    localStorage.setItem("pspgDocs", JSON.stringify(pspgDocs));
+    localStorage.setItem("cats", JSON.stringify(cats));
+  }
+
+  function formatMoney(value) {
+    value = Number(value) || 0;
+
+    if (value >= 1000000) return (value / 1000000).toFixed(1) + " M€";
+    if (value >= 1000) return (value / 1000).toFixed(0) + " k€";
+    return value + " €";
+  }
+
+  function badgeClass(value) {
+    if (value === "Terminée" || value === "Active" || value === "En cours") return "green";
+    if (value === "En retard" || value === "À risque" || value === "Critique") return "red";
+    if (value === "À faire" || value === "À renouveler") return "orange";
+    return "blue";
+  }
+
+  function makeChart(id, config) {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+
+    if (charts[id]) charts[id].destroy();
+
+    charts[id] = new Chart(canvas, config);
+  }
+
+  function countTasks(field, value) {
+    return tasks.filter(t => t[field] === value).length;
   }
 
   function addTask() {
@@ -594,8 +691,8 @@
     }
 
     tasks.push({ name, dueDate, pole, status, priority });
-    saveTasks();
-    renderTasks();
+    saveAll();
+    renderAll();
 
     document.getElementById("taskName").value = "";
     document.getElementById("taskDueDate").value = "";
@@ -603,19 +700,125 @@
 
   function deleteTask(index) {
     tasks.splice(index, 1);
-    saveTasks();
-    renderTasks();
+    saveAll();
+    renderAll();
   }
 
-  function badgeClass(value) {
-    if (value === "Terminée" || value === "Active" || value === "En cours") return "green";
-    if (value === "En retard" || value === "À risque" || value === "Critique") return "red";
-    if (value === "À faire" || value === "À renouveler") return "orange";
-    return "blue";
+  function addPspgBilling() {
+    const convention = document.getElementById("pspgConvention").value;
+    const year = Number(document.getElementById("pspgYear").value);
+    const quarter = document.getElementById("pspgQuarter").value;
+    const payroll = Number(document.getElementById("pspgPayroll").value);
+    const operating = Number(document.getElementById("pspgOperating").value);
+    const equipment = Number(document.getElementById("pspgEquipment").value);
+
+    if (!year) {
+      alert("Merci de saisir une année.");
+      return;
+    }
+
+    pspgBilling.push({ convention, year, quarter, payroll, operating, equipment });
+    saveAll();
+    renderAll();
+
+    document.getElementById("pspgYear").value = "";
+    document.getElementById("pspgPayroll").value = "";
+    document.getElementById("pspgOperating").value = "";
+    document.getElementById("pspgEquipment").value = "";
+  }
+
+  function deletePspgBilling(index) {
+    pspgBilling.splice(index, 1);
+    saveAll();
+    renderAll();
+  }
+
+  function addPspgDeadline() {
+    const title = document.getElementById("pspgDeadlineTitle").value;
+    const owner = document.getElementById("pspgDeadlineOwner").value;
+    const date = document.getElementById("pspgDeadlineDate").value;
+    const status = document.getElementById("pspgDeadlineStatus").value;
+
+    if (!title || !date) {
+      alert("Merci de saisir une action et une date limite.");
+      return;
+    }
+
+    pspgDeadlines.push({ title, owner, date, status });
+    saveAll();
+    renderAll();
+
+    document.getElementById("pspgDeadlineTitle").value = "";
+    document.getElementById("pspgDeadlineOwner").value = "";
+    document.getElementById("pspgDeadlineDate").value = "";
+  }
+
+  function deletePspgDeadline(index) {
+    pspgDeadlines.splice(index, 1);
+    saveAll();
+    renderAll();
+  }
+
+  function addPspgDoc() {
+    const title = document.getElementById("pspgDocTitle").value;
+    const type = document.getElementById("pspgDocType").value;
+    const ref = document.getElementById("pspgDocRef").value;
+
+    if (!title) {
+      alert("Merci de saisir un nom de document.");
+      return;
+    }
+
+    pspgDocs.push({ title, type, ref });
+    saveAll();
+    renderAll();
+
+    document.getElementById("pspgDocTitle").value = "";
+    document.getElementById("pspgDocRef").value = "";
+  }
+
+  function deletePspgDoc(index) {
+    pspgDocs.splice(index, 1);
+    saveAll();
+    renderAll();
+  }
+
+  function addCat() {
+    const name = document.getElementById("catName").value;
+    const partner = document.getElementById("catPartner").value;
+    const start = document.getElementById("catStart").value;
+    const end = document.getElementById("catEnd").value;
+    const sog = Number(document.getElementById("catSog").value);
+    const og = Number(document.getElementById("catOg").value);
+    const status = document.getElementById("catStatus").value;
+
+    if (!name || !start || !end) {
+      alert("Merci de saisir le nom, le début et l’échéance.");
+      return;
+    }
+
+    cats.push({ name, partner, start, end, sog, og, status });
+    saveAll();
+    renderAll();
+
+    document.getElementById("catName").value = "";
+    document.getElementById("catPartner").value = "";
+    document.getElementById("catStart").value = "";
+    document.getElementById("catEnd").value = "";
+    document.getElementById("catSog").value = "";
+    document.getElementById("catOg").value = "";
+  }
+
+  function deleteCat(index) {
+    cats.splice(index, 1);
+    saveAll();
+    renderAll();
   }
 
   function renderTasks() {
     const table = document.getElementById("taskTable");
+    if (!table) return;
+
     table.innerHTML = "";
 
     tasks.forEach((task, index) => {
@@ -633,21 +836,171 @@
 
     document.getElementById("homeOpenTasks").textContent =
       tasks.filter(t => t.status !== "Terminée").length;
-
-    renderCharts();
   }
 
-  function countBy(field, value) {
-    return tasks.filter(t => t[field] === value).length;
+  function renderPspg() {
+    const totalPayroll = pspgBilling.reduce((sum, item) => sum + Number(item.payroll || 0), 0);
+    const totalOperating = pspgBilling.reduce((sum, item) => sum + Number(item.operating || 0), 0);
+    const totalEquipment = pspgBilling.reduce((sum, item) => sum + Number(item.equipment || 0), 0);
+    const total = totalPayroll + totalOperating + totalEquipment;
+
+    document.getElementById("pspgTotalFacture").textContent = formatMoney(total);
+    document.getElementById("pspgMasseSalariale").textContent = formatMoney(totalPayroll);
+    document.getElementById("pspgFonctionnement").textContent = formatMoney(totalOperating);
+    document.getElementById("pspgEquipement").textContent = formatMoney(totalEquipment);
+    document.getElementById("homePspgTotal").textContent = formatMoney(total);
+
+    const billingTable = document.getElementById("pspgBillingTable");
+    billingTable.innerHTML = "";
+
+    pspgBilling.forEach((item, index) => {
+      const rowTotal = Number(item.payroll || 0) + Number(item.operating || 0) + Number(item.equipment || 0);
+
+      billingTable.innerHTML += `
+        <tr>
+          <td>${item.convention}</td>
+          <td>${item.year}</td>
+          <td>${item.quarter}</td>
+          <td>${formatMoney(item.payroll)}</td>
+          <td>${formatMoney(item.operating)}</td>
+          <td>${formatMoney(item.equipment)}</td>
+          <td><strong>${formatMoney(rowTotal)}</strong></td>
+          <td><button class="action" onclick="deletePspgBilling(${index})">Supprimer</button></td>
+        </tr>
+      `;
+    });
+
+    const deadlineTable = document.getElementById("pspgDeadlineTable");
+    deadlineTable.innerHTML = "";
+
+    pspgDeadlines.forEach((item, index) => {
+      deadlineTable.innerHTML += `
+        <tr>
+          <td>${item.title}</td>
+          <td>${item.owner}</td>
+          <td>${item.date}</td>
+          <td><span class="badge ${badgeClass(item.status)}">${item.status}</span></td>
+          <td><button class="action" onclick="deletePspgDeadline(${index})">Supprimer</button></td>
+        </tr>
+      `;
+    });
+
+    const docTable = document.getElementById("pspgDocTable");
+    docTable.innerHTML = "";
+
+    pspgDocs.forEach((item, index) => {
+      docTable.innerHTML += `
+        <tr>
+          <td>${item.title}</td>
+          <td>${item.type}</td>
+          <td>${item.ref}</td>
+          <td><button class="action" onclick="deletePspgDoc(${index})">Supprimer</button></td>
+        </tr>
+      `;
+    });
+
+    makeChart("pspgBillingPieChart", {
+      type: "doughnut",
+      data: {
+        labels: ["Masse salariale", "Fonctionnement", "Équipement"],
+        datasets: [{ data: [totalPayroll, totalOperating, totalEquipment] }]
+      }
+    });
+
+    const sortedBilling = [...pspgBilling].sort((a, b) => {
+      if (a.year !== b.year) return a.year - b.year;
+      return a.quarter.localeCompare(b.quarter);
+    });
+
+    makeChart("pspgBillingLineChart", {
+      type: "line",
+      data: {
+        labels: sortedBilling.map(item => item.convention + " " + item.year + " " + item.quarter),
+        datasets: [{
+          label: "Total facturé",
+          data: sortedBilling.map(item =>
+            Number(item.payroll || 0) + Number(item.operating || 0) + Number(item.equipment || 0)
+          )
+        }]
+      }
+    });
   }
 
-  function makeChart(id, config) {
-    const canvas = document.getElementById(id);
-    if (!canvas) return;
+  function renderCat() {
+    const total = cats.length;
+    const active = cats.filter(c => c.status === "Active").length;
+    const renew = cats.filter(c => c.status === "À renouveler").length;
+    const personnel = cats.reduce((sum, c) => sum + Number(c.sog || 0) + Number(c.og || 0), 0);
+    const sog = cats.reduce((sum, c) => sum + Number(c.sog || 0), 0);
+    const og = cats.reduce((sum, c) => sum + Number(c.og || 0), 0);
 
-    if (charts[id]) charts[id].destroy();
+    document.getElementById("catTotal").textContent = total;
+    document.getElementById("catActive").textContent = active;
+    document.getElementById("catRenew").textContent = renew;
+    document.getElementById("catPersonnel").textContent = personnel;
+    document.getElementById("homeCatTotal").textContent = total;
 
-    charts[id] = new Chart(canvas, config);
+    const table = document.getElementById("catTable");
+    table.innerHTML = "";
+
+    cats.forEach((cat, index) => {
+      table.innerHTML += `
+        <tr>
+          <td>${cat.name}</td>
+          <td>${cat.partner}</td>
+          <td>${cat.start}</td>
+          <td>${cat.end}</td>
+          <td>${cat.sog}</td>
+          <td>${cat.og}</td>
+          <td><span class="badge ${badgeClass(cat.status)}">${cat.status}</span></td>
+          <td><button class="action" onclick="deleteCat(${index})">Supprimer</button></td>
+        </tr>
+      `;
+    });
+
+    makeChart("catStatusChart", {
+      type: "doughnut",
+      data: {
+        labels: ["Active", "À renouveler", "À risque", "Terminée"],
+        datasets: [{
+          data: [
+            cats.filter(c => c.status === "Active").length,
+            cats.filter(c => c.status === "À renouveler").length,
+            cats.filter(c => c.status === "À risque").length,
+            cats.filter(c => c.status === "Terminée").length
+          ]
+        }]
+      }
+    });
+
+    makeChart("catGradeChart", {
+      type: "pie",
+      data: {
+        labels: ["SOG", "OG"],
+        datasets: [{ data: [sog, og] }]
+      }
+    });
+  }
+
+  function renderConventions() {
+    const table = document.getElementById("conventionsTable");
+    table.innerHTML = `
+      <tr><td>PSPG</td><td>Convention EDF</td><td>EDF</td><td><span class="badge green">Active</span></td><td>2027</td></tr>
+      <tr><td>PSPG</td><td>Convention CEA</td><td>CEA</td><td><span class="badge green">Active</span></td><td>À compléter</td></tr>
+      <tr><td>Sandhurst</td><td>Convention Sandhurst</td><td>Britanniques</td><td><span class="badge green">Active</span></td><td>À compléter</td></tr>
+    `;
+
+    cats.forEach(cat => {
+      table.innerHTML += `
+        <tr>
+          <td>CAT</td>
+          <td>${cat.name}</td>
+          <td>${cat.partner}</td>
+          <td><span class="badge ${badgeClass(cat.status)}">${cat.status}</span></td>
+          <td>${cat.end}</td>
+        </tr>
+      `;
+    });
   }
 
   function renderCharts() {
@@ -655,7 +1008,7 @@
       type: "doughnut",
       data: {
         labels: ["PSPG", "CAT", "Sandhurst"],
-        datasets: [{ data: [2, 50, 1] }]
+        datasets: [{ data: [2, cats.length, 1] }]
       }
     });
 
@@ -663,7 +1016,7 @@
       type: "line",
       data: {
         labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
-        datasets: [{ label: "Actions suivies", data: [8, 12, 18, 22, 26, 34] }]
+        datasets: [{ label: "Actions suivies", data: [8, 12, 18, 22, 26, tasks.length + cats.length] }]
       }
     });
 
@@ -674,10 +1027,10 @@
         datasets: [{
           label: "Nombre de tâches",
           data: [
-            countBy("status", "À faire"),
-            countBy("status", "En cours"),
-            countBy("status", "Terminée"),
-            countBy("status", "En retard")
+            countTasks("status", "À faire"),
+            countTasks("status", "En cours"),
+            countTasks("status", "Terminée"),
+            countTasks("status", "En retard")
           ]
         }]
       }
@@ -689,28 +1042,12 @@
         labels: ["PSPG", "CAT", "Sandhurst", "Transverse"],
         datasets: [{
           data: [
-            countBy("pole", "PSPG"),
-            countBy("pole", "CAT"),
-            countBy("pole", "Sandhurst"),
-            countBy("pole", "Transverse")
+            countTasks("pole", "PSPG"),
+            countTasks("pole", "CAT"),
+            countTasks("pole", "Sandhurst"),
+            countTasks("pole", "Transverse")
           ]
         }]
-      }
-    });
-
-    makeChart("pspgChart", {
-      type: "bar",
-      data: {
-        labels: ["EDF", "CEA"],
-        datasets: [{ label: "Volume budgétaire fictif", data: [104, 1.3] }]
-      }
-    });
-
-    makeChart("catChart", {
-      type: "pie",
-      data: {
-        labels: ["Actives", "À renouveler", "À risque"],
-        datasets: [{ data: [42, 6, 2] }]
       }
     });
 
@@ -722,11 +1059,14 @@
       }
     });
 
+    const catSog = cats.reduce((sum, c) => sum + Number(c.sog || 0), 0);
+    const catOg = cats.reduce((sum, c) => sum + Number(c.og || 0), 0);
+
     makeChart("effectifsChart", {
       type: "bar",
       data: {
-        labels: ["PSPG", "CAT", "Sandhurst"],
-        datasets: [{ label: "ETP suivis fictifs", data: [7, 50, 1] }]
+        labels: ["SOG CAT", "OG CAT", "PSPG fictif", "Sandhurst fictif"],
+        datasets: [{ label: "Effectifs suivis", data: [catSog, catOg, 7, 1] }]
       }
     });
 
@@ -734,12 +1074,20 @@
       type: "line",
       data: {
         labels: ["2023", "2024", "2025", "2026"],
-        datasets: [{ label: "Données suivies", data: [15, 28, 41, 53] }]
+        datasets: [{ label: "Données suivies", data: [15, 28, 41, pspgBilling.length + cats.length + tasks.length] }]
       }
     });
   }
 
-  renderTasks();
+  function renderAll() {
+    renderTasks();
+    renderPspg();
+    renderCat();
+    renderConventions();
+    renderCharts();
+  }
+
+  renderAll();
 </script>
 </body>
 </html>
